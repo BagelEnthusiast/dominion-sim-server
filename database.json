@@ -1,12 +1,25 @@
 {
-  "users": [
-    {
-    "name": "nathan",
-    "age": 33
-    },
-    {
-    "name": "sam",
-    "age": 33
-    }
-  ]
+  "paul": {
+    "strategies": [{
+      "label": "bigmoney",
+      "shoppingList": [
+        { "card": "Province", "quantity": 12 },
+        { "card": "Gold", "quantity": 10 },
+        { "card": "Silver", "quantity": 10 }
+      ]
+    }, {
+      "label": "chapel shit",
+      "shoppingList": [
+        { "card": "Chapel", "quantity": 1 },
+        { "card": "Province", "quantity": 12 },
+        { "card": "Gold", "quantity": 10 },
+        { "card": "Silver", "quantity": 10 }]
+    }]
+  },
+  "nathan": {
+    "strategies": [{
+      "label": "gold",
+      "shoppingList": []
+    }]
+  }
 }
