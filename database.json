@@ -3,17 +3,25 @@
     "strategies": [{
       "label": "bigmoney",
       "shoppingList": [
-        { "card": "province", "quantity": 12 },
-        { "card": "gold", "quantity": 10 },
-        { "card": "silver", "quantity": 10 }
+        { "card": "province", "quantity": 99 },
+        { "card": "gold", "quantity": 99 },
+        { "card": "silver", "quantity": 99 }
       ]
     }, {
       "label": "chapel shit",
       "shoppingList": [
         { "card": "chapel", "quantity": 1 },
-        { "card": "province", "quantity": 12 },
-        { "card": "gold", "quantity": 10 },
-        { "card": "silver", "quantity": 10 }]
+        { "card": "province", "quantity": 99 },
+        { "card": "gold", "quantity": 99 },
+        { "card": "silver", "quantity": 99 }]
+    }, {
+      "label": "chapel lab",
+      "shoppingList": [
+        { "card": "chapel", "quantity": 1 },
+        { "card": "province", "quantity": 99 },
+        { "card": "gold", "quantity": 99 },
+        { "card": "laboratory", "quantity": 99 },
+        { "card": "silver", "quantity": 99 }]
     }]
   },
   "nathan": {
