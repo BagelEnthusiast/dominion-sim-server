@@ -3,17 +3,17 @@
     "strategies": [{
       "label": "bigmoney",
       "shoppingList": [
-        { "card": "Province", "quantity": 12 },
-        { "card": "Gold", "quantity": 10 },
-        { "card": "Silver", "quantity": 10 }
+        { "card": "province", "quantity": 12 },
+        { "card": "gold", "quantity": 10 },
+        { "card": "silver", "quantity": 10 }
       ]
     }, {
       "label": "chapel shit",
       "shoppingList": [
-        { "card": "Chapel", "quantity": 1 },
-        { "card": "Province", "quantity": 12 },
-        { "card": "Gold", "quantity": 10 },
-        { "card": "Silver", "quantity": 10 }]
+        { "card": "chapel", "quantity": 1 },
+        { "card": "province", "quantity": 12 },
+        { "card": "gold", "quantity": 10 },
+        { "card": "silver", "quantity": 10 }]
     }]
   },
   "nathan": {
