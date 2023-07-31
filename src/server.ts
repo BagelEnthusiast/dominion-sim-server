@@ -19,6 +19,15 @@ app.get('/api', (req, res, next) => {
   res.send(database)
 })
 
+app.get('/api/user/:username', (req, res, next) => {
+  const username = req.params.username
+  const buffer = fs.readFileSync("./database.json")
+  const jsonStr = buffer.toString()
+  const database = JSON.parse(jsonStr)
+  const user = database[username]
+  res.send(user)
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })

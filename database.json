@@ -27,7 +27,9 @@
   "nathan": {
     "strategies": [{
       "label": "gold",
-      "shoppingList": []
+      "shoppingList": [
+        { "card": "gold", "quantity": 99 }
+      ]
     }]
   }
 }
