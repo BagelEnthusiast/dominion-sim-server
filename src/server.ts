@@ -32,9 +32,13 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
+
 app.post('/api/login', (req, res, next) => {
   console.log('request body', req.body)
   const { username, password } = req.body;
   console.log('username, password: ', username, password)
   return res.json({ message: 'Login Successful', user: username });
 })
+
+
+//todo: authorization for login function
