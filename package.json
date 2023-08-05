@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.4.0",
+    "config": "^3.3.9",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
@@ -19,11 +21,14 @@
     "googleapis": "^123.0.0",
     "jsonwebtoken": "^9.0.1",
     "request": "^2.88.2",
-    "request-promise": "^4.2.6"
+    "request-promise": "^4.2.6",
+    "typegoose": "^5.9.1"
   },
   "devDependencies": {
+    "@types/config": "^3.3.0",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.4.4",
     "nodemon": "^3.0.1",
     "typescript": "^5.1.6"
