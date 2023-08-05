@@ -3,13 +3,11 @@ const app = express();
 const port = 3000
 import cors from 'cors';
 import fs from 'fs';
-require('dotenv').config()
 import jwt, { SignOptions } from 'jsonwebtoken';
-
+require('dotenv').config()
 import axios from 'axios';
 import qs from 'qs';
-import config from 'config';
-
+const crypto = require('crypto');
 
 
 
@@ -36,9 +34,34 @@ export const signJwt = (
   key: 'accessTokenPrivateKey' | 'refreshTokenPrivateKey',
   options: SignOptions = {}
 ) => {
-  const privateKey = Buffer.from(config.get<string>(key), 'base64').toString(
-    'ascii'
-  );
+
+  const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
+    modulusLength: 2048,
+    publicKeyEncoding: {
+      type: 'spki',
+      format: 'pem',
+    },
+    privateKeyEncoding: {
+      type: 'pkcs8',
+      format: 'pem',
+    },
+  });
+  // const atKey = process.env.ACCESS_TOKEN_PRIVATE_KEY
+  // const rtKey = process.env.REFRESH_TOKEN_PRIVATE_KEY
+  // let privateKey;
+  // if (key === 'accessTokenPrivateKey') {
+  //   if(!atKey) {
+  //     throw new Error('ACCESS_TOKEN_PRIVATE_KEY not found')
+  //   }
+  //   privateKey = Buffer.from(atKey).toString('ascii');
+  // }
+  // else {
+  //   if(!rtKey) {
+  //     throw new Error('REFRESH_TOKEN_PRIVATE_KEY not found')
+  //   }
+  //   privateKey = Buffer.from(rtKey).toString('ascii');
+  // }
+
   return jwt.sign(payload, privateKey, {
     ...(options && options),
     algorithm: 'RS256',
@@ -50,12 +73,12 @@ export const signJwt = (
 export const signToken = async (user: any) => {
   // Sign the access token
   const access_token = signJwt({ sub: user._id }, 'accessTokenPrivateKey', {
-    expiresIn: `${config.get<number>('accessTokenExpiresIn')}m`,
+    expiresIn: `${process.env.accessTokenExpiresIn}m`,
   });
 
   // Sign the refresh token
   const refresh_token = signJwt({ sub: user._id }, 'refreshTokenPrivateKey', {
-    expiresIn: `${config.get<number>('refreshTokenExpiresIn')}m`,
+    expiresIn: `${process.env.refreshTokenExpiresIn}m`,
   });
 
   // Create a Session  - TODO: store in redis??
@@ -67,21 +90,22 @@ export const signToken = async (user: any) => {
   return { access_token, refresh_token };
 };
 
+// hard coding the time for now .. yikes
 // Cookie options
 const accessTokenCookieOptions: CookieOptions = {
   expires: new Date(
-    Date.now() + config.get<number>('accessTokenExpiresIn') * 60 * 1000
+    Date.now() + 1 * 60 * 1000
   ),
-  maxAge: config.get<number>('accessTokenExpiresIn') * 60 * 1000,
+  maxAge: 59 * 60 * 1000,
   httpOnly: true,
   sameSite: 'lax',
 };
 
 const refreshTokenCookieOptions: CookieOptions = {
   expires: new Date(
-    Date.now() + config.get<number>('refreshTokenExpiresIn') * 60 * 1000
+    Date.now() + 1 * 60 * 1000
   ),
-  maxAge: config.get<number>('refreshTokenExpiresIn') * 60 * 1000,
+  maxAge: 59 * 60 * 1000,
   httpOnly: true,
   sameSite: 'lax',
 };
@@ -223,7 +247,8 @@ app.get('/login', async (req, res, next) => {
     const database = JSON.parse(jsonStr)
 
     if (!database.hasOwnProperty(email)) {
-      return res.redirect(`${config.get<string>('origin')}/oauth/error`);
+      //hard coding the url for now
+      return res.redirect(`http://localhost:3000/oauth/error`);
     }
     const user = database[email]
     console.log('name, email, picture: ', name, email, picture)
@@ -236,7 +261,8 @@ app.get('/login', async (req, res, next) => {
     res.cookie('access-token', accessToken, accessTokenCookieOptions);
     res.cookie('logged_in', true, {
       expires: new Date(
-        Date.now() + config.get<number>('accessTokenExpiresIn') * 60 * 1000
+        //hard coding for now.. yikes
+        Date.now() + 1 * 60 * 1000
       ),
     });
 
