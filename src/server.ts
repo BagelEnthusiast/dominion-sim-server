@@ -9,7 +9,7 @@ import axios from 'axios';
 import qs from 'qs';
 const crypto = require('crypto');
 
-
+// referenced https://codevoweb.com/google-oauth-authentication-react-and-node/ source code for jwt functions
 
 
 import { OAuth2Client } from "google-auth-library";
@@ -29,6 +29,7 @@ app.get('/', (req, res) => {
 
 
 //TODO: make this a seperate file
+
 export const signJwt = (
   payload: Object,
   key: 'accessTokenPrivateKey' | 'refreshTokenPrivateKey',
@@ -46,21 +47,6 @@ export const signJwt = (
       format: 'pem',
     },
   });
-  // const atKey = process.env.ACCESS_TOKEN_PRIVATE_KEY
-  // const rtKey = process.env.REFRESH_TOKEN_PRIVATE_KEY
-  // let privateKey;
-  // if (key === 'accessTokenPrivateKey') {
-  //   if(!atKey) {
-  //     throw new Error('ACCESS_TOKEN_PRIVATE_KEY not found')
-  //   }
-  //   privateKey = Buffer.from(atKey).toString('ascii');
-  // }
-  // else {
-  //   if(!rtKey) {
-  //     throw new Error('REFRESH_TOKEN_PRIVATE_KEY not found')
-  //   }
-  //   privateKey = Buffer.from(rtKey).toString('ascii');
-  // }
 
   return jwt.sign(payload, privateKey, {
     ...(options && options),
@@ -70,14 +56,15 @@ export const signJwt = (
 
 // Sign Token
 //TODO: specify user type
-export const signToken = async (user: any) => {
+export const signToken = async (e: string) => {
   // Sign the access token
-  const access_token = signJwt({ sub: user._id }, 'accessTokenPrivateKey', {
+  console.log('user object: ', e)
+  const access_token = signJwt({ email: e }, 'accessTokenPrivateKey', {
     expiresIn: `${process.env.accessTokenExpiresIn}m`,
   });
 
   // Sign the refresh token
-  const refresh_token = signJwt({ sub: user._id }, 'refreshTokenPrivateKey', {
+  const refresh_token = signJwt({ email: e }, 'refreshTokenPrivateKey', {
     expiresIn: `${process.env.refreshTokenExpiresIn}m`,
   });
 
@@ -220,9 +207,9 @@ export async function getGoogleUser({
 
 app.get('/login', async (req, res, next) => {
     console.log('req.query: ', req.query)
-    const code = req.query.code as string;
+    const code = req.query.code as string
     console.log('code: ', code)
-    const pathUrl = '/'
+    const pathUrl = req.query.state as string
     //TODO: make pathURL dynamic
     //const pathUrl = (req.query.state as string) || '/';
 
@@ -254,11 +241,12 @@ app.get('/login', async (req, res, next) => {
     console.log('name, email, picture: ', name, email, picture)
 
     // Create access and refresh token
-    const { access_token: accessToken, refresh_token } = await signToken(user);
+    const { access_token: accessToken, refresh_token } = await signToken(email);
 
     // Send cookie
     res.cookie('refresh-token', refresh_token, refreshTokenCookieOptions);
     res.cookie('access-token', accessToken, accessTokenCookieOptions);
+    res.cookie('user', email, { httpOnly: false });
     res.cookie('logged_in', true, {
       expires: new Date(
         //hard coding for now.. yikes
@@ -266,8 +254,23 @@ app.get('/login', async (req, res, next) => {
       ),
     });
 
+
+    //       res.status(201).json({
+//         message: "Login was successful",
+//         user: {
+//           firstName: profile?.given_name,
+//           lastName: profile?.family_name,
+//           picture: profile?.picture,
+//           email: profile?.email,
+//           token: jwt.sign({ email: profile?.email }, process.env.JWT_SECRET, {
+//             expiresIn: "1d",
+//           }),
+//         },
+//       });
+
+    res.redirect('http://localhost:5173');
     //TODO: redirect to pathUrl
-    res.redirect(`/`);
+    //res.redirect(pathUrl);
 
 })
 
