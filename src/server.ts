@@ -84,7 +84,7 @@ const accessTokenCookieOptions: CookieOptions = {
     Date.now() + 1 * 60 * 1000
   ),
   maxAge: 59 * 60 * 1000,
-  httpOnly: true,
+  httpOnly: false,
   sameSite: 'lax',
 };
 
@@ -93,7 +93,7 @@ const refreshTokenCookieOptions: CookieOptions = {
     Date.now() + 1 * 60 * 1000
   ),
   maxAge: 59 * 60 * 1000,
-  httpOnly: true,
+  httpOnly: false,
   sameSite: 'lax',
 };
 
