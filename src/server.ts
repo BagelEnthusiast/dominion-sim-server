@@ -11,15 +11,6 @@ const crypto = require('crypto');
 
 // referenced https://codevoweb.com/google-oauth-authentication-react-and-node/ source code for jwt functions
 
-
-import { OAuth2Client } from "google-auth-library";
-const session = require('express-session')
-const request = require('request-promise')
-const http = require('http');
-const https = require('https');
-const url = require('url');
-import { google } from 'googleapis';
-
 app.use(express.json())
 app.use(cors())
 
@@ -206,10 +197,9 @@ export async function getGoogleUser({
 }
 
 app.get('/login', async (req, res, next) => {
-    console.log('req.query: ', req.query)
     const code = req.query.code as string
-    console.log('code: ', code)
-    const pathUrl = req.query.state as string
+
+    //const pathUrl = req.query.state as string
     //TODO: make pathURL dynamic
     //const pathUrl = (req.query.state as string) || '/';
 
@@ -232,12 +222,14 @@ app.get('/login', async (req, res, next) => {
     const buffer = fs.readFileSync("./database.json")
     const jsonStr = buffer.toString()
     const database = JSON.parse(jsonStr)
+    console.log('database: ', database)
 
     if (!database.hasOwnProperty(email)) {
-      //hard coding the url for now
-      return res.redirect(`http://localhost:3000/oauth/error`);
+      //add a user to the database with email username
+      
+      database[email] = { "strategies": []}
+      fs.writeFileSync('./database.json',JSON.stringify(database, null, 2))
     }
-    const user = database[email]
     console.log('name, email, picture: ', name, email, picture)
 
     // Create access and refresh token
@@ -253,21 +245,6 @@ app.get('/login', async (req, res, next) => {
         Date.now() + 1 * 60 * 1000
       ),
     });
-
-
-    //       res.status(201).json({
-//         message: "Login was successful",
-//         user: {
-//           firstName: profile?.given_name,
-//           lastName: profile?.family_name,
-//           picture: profile?.picture,
-//           email: profile?.email,
-//           token: jwt.sign({ email: profile?.email }, process.env.JWT_SECRET, {
-//             expiresIn: "1d",
-//           }),
-//         },
-//       });
-
     res.redirect('http://localhost:5173');
     //TODO: redirect to pathUrl
     //res.redirect(pathUrl);

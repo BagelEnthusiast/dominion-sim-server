@@ -1,34 +1,100 @@
 {
   "paul": {
-    "strategies": [{
-      "label": "bigmoney",
-      "shoppingList": [
-        { "card": "province", "quantity": 99 },
-        { "card": "gold", "quantity": 99 },
-        { "card": "silver", "quantity": 99 }
-      ]
-    }, {
-      "label": "chapel shit",
-      "shoppingList": [
-        { "card": "chapel", "quantity": 1 },
-        { "card": "province", "quantity": 99 },
-        { "card": "gold", "quantity": 99 },
-        { "card": "silver", "quantity": 99 }]
-    }, {
-      "label": "chapel lab",
-      "shoppingList": [
-        { "card": "chapel", "quantity": 1 },
-        { "card": "province", "quantity": 99 },
-        { "card": "gold", "quantity": 99 },
-        { "card": "laboratory", "quantity": 99 },
-        { "card": "silver", "quantity": 99 }]
-    }]
+    "strategies": [
+      {
+        "label": "bigmoney",
+        "shoppingList": [
+          {
+            "card": "province",
+            "quantity": 99
+          },
+          {
+            "card": "gold",
+            "quantity": 99
+          },
+          {
+            "card": "silver",
+            "quantity": 99
+          }
+        ]
+      },
+      {
+        "label": "chapel shit",
+        "shoppingList": [
+          {
+            "card": "chapel",
+            "quantity": 1
+          },
+          {
+            "card": "province",
+            "quantity": 99
+          },
+          {
+            "card": "gold",
+            "quantity": 99
+          },
+          {
+            "card": "silver",
+            "quantity": 99
+          }
+        ]
+      },
+      {
+        "label": "chapel lab",
+        "shoppingList": [
+          {
+            "card": "chapel",
+            "quantity": 1
+          },
+          {
+            "card": "province",
+            "quantity": 99
+          },
+          {
+            "card": "gold",
+            "quantity": 99
+          },
+          {
+            "card": "laboratory",
+            "quantity": 99
+          },
+          {
+            "card": "silver",
+            "quantity": 99
+          }
+        ]
+      }
+    ]
+  },
+  "nathan.richardson93@gmail.com": {
+    "strategies": [
+      {
+        "label": "gold",
+        "shoppingList": [
+          {
+            "card": "gold",
+            "quantity": 99
+          }
+        ]
+      }
+    ]
   },
   "nathan.richardson94@gmail.com": {
-    "strategies": [{
-      "label": "gold",
+    "strategies": [      {
+      "label": "bigmoney",
       "shoppingList": [
-        { "card": "gold", "quantity": 99 }
+        {
+          "card": "province",
+          "quantity": 99
+        },
+        {
+          "card": "gold",
+          "quantity": 99
+        },
+        {
+          "card": "silver",
+          "quantity": 99
+        }
       ]
     }]
   }
