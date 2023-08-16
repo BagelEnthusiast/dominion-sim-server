@@ -125,18 +125,28 @@ export interface Strategy {
 
 export interface StrategyApiRequestBody {
   strat: Strategy,
-  username: string
+  username: string,
+  crudType: string
 }
 
-app.post('/user/strategy', (req, res, next) => {
-  console.log('req body: ', req.body)
-  const reqBody: StrategyApiRequestBody = req.body;
-  const database: ApiData = getDatabase()
+const updateStrategy = (reqBody: StrategyApiRequestBody, database: ApiData) => {
   const strategyIndex = database[reqBody.username].strategies.findIndex((strat) => {
     return strat.label === reqBody.strat.label
   })
   database[reqBody.username].strategies.splice(strategyIndex, 1, reqBody.strat)
   fs.writeFileSync('./database.json',JSON.stringify(database, null, 2))
+}
+
+const createStrategy = (reqBody: StrategyApiRequestBody) => {
+
+}
+
+app.post('/user/strategy', (req, res, next) => {
+  const reqBody: StrategyApiRequestBody = req.body;
+  const database: ApiData = getDatabase()
+  if (req.body.type === "update") {
+    updateStrategy(reqBody, database)
+  }
   return res.json({ message: 'Strategy Updated' });
 })
 
