@@ -12,6 +12,8 @@ import { GoogleOauthToken, GoogleUserResult } from './interfaces'
 
 // referenced https://codevoweb.com/google-oauth-authentication-react-and-node/ source code for jwt functions
 
+const isDev = process.env.DEV_MODE
+
 app.use(express.json())
 app.use(cors())
 
@@ -129,7 +131,6 @@ export interface StrategyApiRequestBody {
 }
 
 app.post('/user/strategy', (req, res, next) => {
-  console.log('req body: ', req.body)
   const reqBody: StrategyApiRequestBody = req.body;
   const database: ApiData = getDatabase()
   const strategyIndex = database[reqBody.username].strategies.findIndex((strat) => {
@@ -157,11 +158,10 @@ export const getGoogleOauthToken = async ({
     code,
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET,
-    redirect_uri: process.env.REDIRECT_URI,
+    redirect_uri: isDev ? process.env.REDIRECT_URI : process.env.REDIRECT_URI_PROD,
     grant_type: 'authorization_code',
   };
 
-  console.log('options: ', options)
   try {
     const { data } = await axios.post<GoogleOauthToken>(
       rootURl,
@@ -207,7 +207,6 @@ export async function getGoogleUser({
 
 app.get('/login', async (req, res, next) => {
     const code = req.query.code as string
-
     //const pathUrl = req.query.state as string
     //TODO: make pathURL dynamic
     //const pathUrl = (req.query.state as string) || '/';
@@ -254,7 +253,9 @@ app.get('/login', async (req, res, next) => {
         Date.now() + 1 * 60 * 1000
       ),
     });
-    res.redirect('http://localhost:5173');
+
+    isDev === 'true' ? res.redirect('http://localhost:5173') : res.redirect('https://dominion-sim-client.vercel.app/')
+
     //TODO: redirect to pathUrl
     //res.redirect(pathUrl);
 
