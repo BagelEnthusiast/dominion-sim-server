@@ -1,3 +1,11 @@
+# this is a helper script
+
+###############################
+# sshlinode
+# cd dominion-sim-server
+# ./server-reboot.sh
+###############################
+
 # ensure node is correct version
 nvm i $(cat .nvmrc)
 nvm use
