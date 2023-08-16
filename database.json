@@ -80,22 +80,24 @@
     ]
   },
   "nathan.richardson94@gmail.com": {
-    "strategies": [      {
-      "label": "bigmoney",
-      "shoppingList": [
-        {
-          "card": "province",
-          "quantity": 99
-        },
-        {
-          "card": "gold",
-          "quantity": 99
-        },
-        {
-          "card": "silver",
-          "quantity": 99
-        }
-      ]
-    }]
+    "strategies": [
+      {
+        "label": "bigmoney",
+        "shoppingList": [
+          {
+            "card": "province",
+            "quantity": 97
+          },
+          {
+            "card": "gold",
+            "quantity": 97
+          },
+          {
+            "card": "silver",
+            "quantity": 98
+          }
+        ]
+      }
+    ]
   }
 }

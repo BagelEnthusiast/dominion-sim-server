@@ -8,6 +8,8 @@ require('dotenv').config()
 import axios from 'axios';
 import qs from 'qs';
 const crypto = require('crypto');
+import GoogleOauthToken from './interfaces'
+import GoogleUserResult from './interfaces'
 
 // referenced https://codevoweb.com/google-oauth-authentication-react-and-node/ source code for jwt functions
 
@@ -18,6 +20,11 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 })
 
+const getDatabase = () => {
+  const buffer = fs.readFileSync("./database.json")
+  const jsonStr = buffer.toString()
+  return JSON.parse(jsonStr)
+}
 
 //TODO: make this a seperate file
 
@@ -88,43 +95,50 @@ const refreshTokenCookieOptions: CookieOptions = {
   sameSite: 'lax',
 };
 
-
-
 app.get('/api', (req, res, next) => {
-  const buffer = fs.readFileSync("./database.json")
-  const jsonStr = buffer.toString()
-  const database = JSON.parse(jsonStr)
-  res.send(database)
+  res.send(getDatabase())
 })
 
 app.get('/api/user/:username', (req, res, next) => {
   const username = req.params.username
-  const buffer = fs.readFileSync("./database.json")
-  const jsonStr = buffer.toString()
-  const database = JSON.parse(jsonStr)
+  const database = getDatabase()
   const user = database[username]
   res.send(user)
+})
+
+export interface UserData {
+  strategies: Strategy[]
+}
+
+export interface ApiData {
+  [user: string]: UserData
+}
+
+export interface ShoppingListItem {
+  card: string,
+  quantity: number
+}
+
+export interface Strategy {
+  label: string
+  shoppingList: ShoppingListItem[]
+}
+
+app.post('/api', (req, res, next) => {
+  console.log('req body: ', req.body)
+  const database: ApiData = getDatabase()
+  const strategyIndex = database[req.body.username].strategies.findIndex((strat) => {
+    return strat.label === req.body.strat.label
+  })
+  database[req.body.username].strategies.splice(strategyIndex, 1, req.body.strat)
+  fs.writeFileSync('./database.json',JSON.stringify(database, null, 2))
+  return res.json({ message: 'Strategy Updated' });
 })
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
-app.post('/api/login', (req, res, next) => {
-  console.log('request body', req.body)
-  const { username, password } = req.body;
-  console.log('username, password: ', username, password)
-  return res.json({ message: 'Login Successful', user: username });
-})
-
-interface GoogleOauthToken {
-  access_token: string;
-  id_token: string;
-  expires_in: number;
-  refresh_token: string;
-  token_type: string;
-  scope: string;
-}
 
 export const getGoogleOauthToken = async ({
   code,
@@ -161,16 +175,6 @@ export const getGoogleOauthToken = async ({
   }
 };
 
-interface GoogleUserResult {
-  id: string;
-  email: string;
-  verified_email: boolean;
-  name: string;
-  given_name: string;
-  family_name: string;
-  picture: string;
-  locale: string;
-}
 
 export async function getGoogleUser({
   id_token,
