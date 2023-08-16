@@ -8,8 +8,7 @@ require('dotenv').config()
 import axios from 'axios';
 import qs from 'qs';
 const crypto = require('crypto');
-import GoogleOauthToken from './interfaces'
-import GoogleUserResult from './interfaces'
+import { GoogleOauthToken, GoogleUserResult } from './interfaces'
 
 // referenced https://codevoweb.com/google-oauth-authentication-react-and-node/ source code for jwt functions
 
@@ -124,13 +123,19 @@ export interface Strategy {
   shoppingList: ShoppingListItem[]
 }
 
-app.post('/api', (req, res, next) => {
+export interface StrategyApiRequestBody {
+  strat: Strategy,
+  username: string
+}
+
+app.post('/user/strategy', (req, res, next) => {
   console.log('req body: ', req.body)
+  const reqBody: StrategyApiRequestBody = req.body;
   const database: ApiData = getDatabase()
-  const strategyIndex = database[req.body.username].strategies.findIndex((strat) => {
-    return strat.label === req.body.strat.label
+  const strategyIndex = database[reqBody.username].strategies.findIndex((strat) => {
+    return strat.label === reqBody.strat.label
   })
-  database[req.body.username].strategies.splice(strategyIndex, 1, req.body.strat)
+  database[reqBody.username].strategies.splice(strategyIndex, 1, reqBody.strat)
   fs.writeFileSync('./database.json',JSON.stringify(database, null, 2))
   return res.json({ message: 'Strategy Updated' });
 })
