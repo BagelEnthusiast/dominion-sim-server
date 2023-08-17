@@ -158,7 +158,7 @@ export const getGoogleOauthToken = async ({
     code,
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET,
-    redirect_uri: isDev ? process.env.REDIRECT_URI : process.env.REDIRECT_URI_PROD,
+    redirect_uri: isDev === "true" ? process.env.REDIRECT_URI : process.env.REDIRECT_URI_PROD,
     grant_type: 'authorization_code',
   };
   console.log('options: ', options)
