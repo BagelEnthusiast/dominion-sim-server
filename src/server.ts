@@ -161,7 +161,7 @@ export const getGoogleOauthToken = async ({
     redirect_uri: isDev ? process.env.REDIRECT_URI : process.env.REDIRECT_URI_PROD,
     grant_type: 'authorization_code',
   };
-
+  console.log('options: ', options)
   try {
     const { data } = await axios.post<GoogleOauthToken>(
       rootURl,
@@ -206,6 +206,7 @@ export async function getGoogleUser({
 }
 
 app.get('/login', async (req, res, next) => {
+    console.log('hitting login route')
     const code = req.query.code as string
     //const pathUrl = req.query.state as string
     //TODO: make pathURL dynamic
