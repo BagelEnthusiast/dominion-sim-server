@@ -84,7 +84,9 @@ const accessTokenCookieOptions: CookieOptions = {
   ),
   maxAge: 59 * 60 * 1000,
   httpOnly: false,
-  sameSite: 'lax',
+  sameSite: 'none',
+  domain: 'https://dominion-sim-client.vercel.app/',
+  
 };
 
 const refreshTokenCookieOptions: CookieOptions = {
