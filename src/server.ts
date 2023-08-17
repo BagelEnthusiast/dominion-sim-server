@@ -205,12 +205,12 @@ export async function getGoogleUser({
   }
 }
 // app.get('/login,')
-app.get('/login', (req, res) => {
-  res.send('Hello World!');
-})
-/*
+// app.get('/login', (req, res) => {
+//   res.send('Hello World!');
+// })
+
 app.get('/login', async (req, res, next) => {
-    console.log('hitting login route')
+    console.log('req.query: ', req.query)
     const code = req.query.code as string
     //const pathUrl = req.query.state as string
     //TODO: make pathURL dynamic
@@ -265,4 +265,4 @@ app.get('/login', async (req, res, next) => {
     //res.redirect(pathUrl);
 
 })
-*/
+
