@@ -93,9 +93,10 @@ const refreshTokenCookieOptions: CookieOptions = {
   expires: new Date(
     Date.now() + 1 * 60 * 1000
   ),
-  maxAge: 59 * 60 * 1000,
+  maxAge: 59 * 60 * 1000, 
   httpOnly: false,
-  sameSite: 'lax',
+  sameSite: 'none',
+  domain: 'https://dominion-sim-client.vercel.app/',
 };
 
 app.get('/api', (req, res, next) => {
