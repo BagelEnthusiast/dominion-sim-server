@@ -86,6 +86,7 @@ const accessTokenCookieOptions: CookieOptions = {
   httpOnly: false,
   sameSite: 'none',
   domain: 'https://dominion-sim-client.vercel.app/',
+  secure: true
   
 };
 
@@ -97,6 +98,7 @@ const refreshTokenCookieOptions: CookieOptions = {
   httpOnly: false,
   sameSite: 'none',
   domain: 'https://dominion-sim-client.vercel.app/',
+  secure: true
 };
 
 app.get('/api', (req, res, next) => {
