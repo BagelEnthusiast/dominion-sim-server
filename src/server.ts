@@ -263,8 +263,8 @@ app.get('/login', async (req, res, next) => {
         Date.now() + 1 * 60 * 1000
       ),
     });
-
-    isDev === 'true' ? res.redirect('http://localhost:5173') : res.redirect('https://dominion-sim-client.vercel.app/')
+    
+    isDev === 'true' ? res.redirect(`http://localhost:5173/${accessToken}`) : res.redirect(`https://dominion-sim-client.vercel.app/${accessToken}`)
 
     //TODO: redirect to pathUrl
     //res.redirect(pathUrl);
