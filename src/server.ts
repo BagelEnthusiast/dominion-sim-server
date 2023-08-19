@@ -66,7 +66,7 @@ export const signToken = async (e: string) => {
   const refresh_token = signJwt({ email: e }, 'refreshTokenPrivateKey', {
     expiresIn: `${process.env.refreshTokenExpiresIn}m`,
   });
-
+  console.log('tokens signed')
   // Create a Session  - TODO: store in redis??
   // redisClient.set(user._id, JSON.stringify(user), {
   //   EX: 60 * 60,
@@ -254,17 +254,17 @@ app.get('/login', async (req, res, next) => {
     const { access_token: accessToken, refresh_token } = await signToken(email);
 
     // Send cookie
-    res.cookie('refresh-token', refresh_token, refreshTokenCookieOptions);
-    res.cookie('access-token', accessToken, accessTokenCookieOptions);
-    res.cookie('user', email, { httpOnly: false });
-    res.cookie('logged_in', true, {
-      expires: new Date(
-        //hard coding for now.. yikes
-        Date.now() + 1 * 60 * 1000
-      ),
-    });
+    // res.cookie('refresh-token', refresh_token, refreshTokenCookieOptions);
+    // res.cookie('access-token', accessToken, accessTokenCookieOptions);
+    // res.cookie('user', email, { httpOnly: false });
+    // res.cookie('logged_in', true, {
+    //   expires: new Date(
+    //     //hard coding for now.. yikes
+    //     Date.now() + 1 * 60 * 1000
+    //   ),
+    // });
     
-    isDev === 'true' ? res.redirect(`http://localhost:5173/${accessToken}`) : res.redirect(`https://dominion-sim-client.vercel.app/${accessToken}`)
+    isDev === 'true' ? res.redirect(`http://localhost:5173/?t=${accessToken}`) : res.redirect(`https://dominion-sim-client.vercel.app/?t=${accessToken}`)
 
     //TODO: redirect to pathUrl
     //res.redirect(pathUrl);
