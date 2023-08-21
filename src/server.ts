@@ -253,18 +253,9 @@ app.get('/login', async (req, res, next) => {
     // Create access and refresh token
     const { access_token: accessToken, refresh_token } = await signToken(email);
 
-    // Send cookie
-    // res.cookie('refresh-token', refresh_token, refreshTokenCookieOptions);
-    // res.cookie('access-token', accessToken, accessTokenCookieOptions);
-    // res.cookie('user', email, { httpOnly: false });
-    // res.cookie('logged_in', true, {
-    //   expires: new Date(
-    //     //hard coding for now.. yikes
-    //     Date.now() + 1 * 60 * 1000
-    //   ),
-    // });
-    
-    isDev === 'true' ? res.redirect(`http://localhost:5173/?t=${accessToken}`) : res.redirect(`https://dominion-sim-client.vercel.app/?t=${accessToken}`)
+    const baseUrl = isDev === 'true' ? 'http://localhost:5173' : 'https://dominion-sim-client.vercel.app';
+    const formattedUrl = `${baseUrl}/oauth/?t=${accessToken}`;
+    res.redirect(formattedUrl);
 
     //TODO: redirect to pathUrl
     //res.redirect(pathUrl);
