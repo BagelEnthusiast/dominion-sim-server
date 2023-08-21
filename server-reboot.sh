@@ -4,6 +4,11 @@
 # sshlinode
 # cd dominion-sim-server
 # ./server-reboot.sh
+
+
+# to fix?
+# sed -i 's/\r//g' server-reboot.sh
+
 ###############################
 
 # ensure node is correct version
