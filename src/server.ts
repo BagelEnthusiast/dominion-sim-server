@@ -121,11 +121,13 @@ export interface ApiData {
 }
 
 export interface ShoppingListItem {
+  id: string
   card: string,
   quantity: number
 }
 
 export interface Strategy {
+  id: string
   label: string
   shoppingList: ShoppingListItem[]
 }
@@ -135,11 +137,19 @@ export interface StrategyApiRequestBody {
   username: string
 }
 
+app.post('/user/strategy/create', (req, res, next) => {
+  const reqBody: StrategyApiRequestBody = req.body;
+  const database: ApiData = getDatabase()
+  database[reqBody.username].strategies.push(reqBody.strat)
+  fs.writeFileSync('./database.json',JSON.stringify(database, null, 2))
+  return res.json({ message: 'Strategy Created' });
+})
+
 app.post('/user/strategy', (req, res, next) => {
   const reqBody: StrategyApiRequestBody = req.body;
   const database: ApiData = getDatabase()
   const strategyIndex = database[reqBody.username].strategies.findIndex((strat) => {
-    return strat.label === reqBody.strat.label
+    return strat.id === reqBody.strat.id
   })
   database[reqBody.username].strategies.splice(strategyIndex, 1, reqBody.strat)
   fs.writeFileSync('./database.json',JSON.stringify(database, null, 2))
