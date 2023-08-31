@@ -136,6 +136,11 @@ export interface StrategyApiRequestBody {
   strat: Strategy,
   username: string
 }
+export interface CreateShoppingListItemBody {
+  strategyId: string,
+  username: string,
+  item: ShoppingListItem
+}
 
 app.post('/user/strategy/create', (req, res, next) => {
   const reqBody: StrategyApiRequestBody = req.body;
@@ -143,6 +148,20 @@ app.post('/user/strategy/create', (req, res, next) => {
   database[reqBody.username].strategies.push(reqBody.strat)
   fs.writeFileSync('./database.json',JSON.stringify(database, null, 2))
   return res.json({ message: 'Strategy Created' });
+})
+
+app.post('/user/strategy/shoppingList/shoppingListItem/create', (req, res, next) => {
+  const reqBody: CreateShoppingListItemBody = req.body;
+  const database: ApiData = getDatabase()
+  const strategy = database[reqBody.username].strategies.find((strat: Strategy) => {
+    return strat.id === reqBody.strategyId
+  })
+  if (strategy === undefined) {
+    throw new Error('The strategy you are trying to update no longer exists');
+  }
+  strategy.shoppingList.push(reqBody.item)
+  fs.writeFileSync('./database.json',JSON.stringify(database, null, 2))
+  return res.json({ message: 'Strategy Shopping List item created' });
 })
 
 app.post('/user/strategy', (req, res, next) => {
