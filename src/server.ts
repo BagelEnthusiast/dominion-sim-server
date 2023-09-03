@@ -122,7 +122,7 @@ export interface ApiData {
 
 export interface ShoppingListItem {
   id: string
-  card: string,
+  card: string
   quantity: number
 }
 
@@ -133,13 +133,18 @@ export interface Strategy {
 }
 
 export interface StrategyApiRequestBody {
-  strat: Strategy,
+  strat: Strategy
   username: string
 }
 export interface CreateShoppingListItemBody {
-  strategyId: string,
-  username: string,
+  strategyId: string
+  username: string
   item: ShoppingListItem
+}
+
+export interface DeleteStrategyBody {
+  id: string
+  username: string
 }
 
 app.post('/user/strategy/create', (req, res, next) => {
@@ -175,9 +180,21 @@ app.post('/user/strategy', (req, res, next) => {
   return res.json({ message: 'Strategy Updated' });
 })
 
+app.delete('/user/strategy/delete', (req, res, next) => {
+  const reqBody: DeleteStrategyBody = req.body
+  const database: ApiData = getDatabase()
+  const strategyIndex = database[reqBody.username].strategies.findIndex((strat) => {
+    return strat.id === reqBody.id
+  })
+  const deletedStrategy = database[reqBody.username].strategies.splice(strategyIndex, 1)
+  fs.writeFileSync('./database.json',JSON.stringify(database, null, 2))
+  return res.json({ message: `${deletedStrategy} deleted`});
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+
 
 
 export const getGoogleOauthToken = async ({
