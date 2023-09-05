@@ -7,7 +7,7 @@ require("dotenv").config();
 import {
   StrategyApiRequestBody,
   ApiData,
-  CreateShoppingListItemBody,
+  ShoppingListItemDTO,
   Strategy,
   DeleteStrategyBody,
 } from "./interfaces";
@@ -31,6 +31,18 @@ export const getDatabase = () => {
   return JSON.parse(jsonStr);
 };
 
+export const getStrategy = (requestBody: ShoppingListItemDTO, database: ApiData) => {
+  const strategy = database[requestBody.username].strategies.find(
+    (strat: Strategy) => {
+      return strat.id === requestBody.strategyId;
+    }
+  );
+  if (strategy === undefined) {
+    throw new Error("The strategy you are trying to update no longer exists");
+  }
+  return strategy
+}
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -42,58 +54,6 @@ app.get("/api/user/:username", (req, res, next) => {
   const database = getDatabase();
   const user = database[username];
   res.send(user);
-});
-app.post("/user/strategy/create", (req, res, next) => {
-  const reqBody: StrategyApiRequestBody = req.body;
-  const database: ApiData = getDatabase();
-  database[reqBody.username].strategies.push(reqBody.strat);
-  fs.writeFileSync("./database.json", JSON.stringify(database, null, 2));
-  return res.json({ message: "Strategy Created" });
-});
-app.post(
-  "/user/strategy/shoppingList/shoppingListItem/create",
-  (req, res, next) => {
-    const reqBody: CreateShoppingListItemBody = req.body;
-    const database: ApiData = getDatabase();
-    const strategy = database[reqBody.username].strategies.find(
-      (strat: Strategy) => {
-        return strat.id === reqBody.strategyId;
-      }
-    );
-    if (strategy === undefined) {
-      throw new Error("The strategy you are trying to update no longer exists");
-    }
-    strategy.shoppingList.push(reqBody.item);
-    fs.writeFileSync("./database.json", JSON.stringify(database, null, 2));
-    return res.json({ message: "Strategy Shopping List item created" });
-  }
-);
-app.post("/user/strategy", (req, res, next) => {
-  const reqBody: StrategyApiRequestBody = req.body;
-  const database: ApiData = getDatabase();
-  const strategyIndex = database[reqBody.username].strategies.findIndex(
-    (strat) => {
-      return strat.id === reqBody.strat.id;
-    }
-  );
-  database[reqBody.username].strategies.splice(strategyIndex, 1, reqBody.strat);
-  fs.writeFileSync("./database.json", JSON.stringify(database, null, 2));
-  return res.json({ message: "Strategy Updated" });
-});
-app.delete("/user/strategy/delete", (req, res, next) => {
-  const reqBody: DeleteStrategyBody = req.body;
-  const database: ApiData = getDatabase();
-  const strategyIndex = database[reqBody.username].strategies.findIndex(
-    (strat) => {
-      return strat.id === reqBody.id;
-    }
-  );
-  const deletedStrategy = database[reqBody.username].strategies.splice(
-    strategyIndex,
-    1
-  );
-  fs.writeFileSync("./database.json", JSON.stringify(database, null, 2));
-  return res.json({ message: `${deletedStrategy} deleted` });
 });
 app.get("/login", async (req, res, next) => {
   const code = req.query.code as string;
@@ -128,3 +88,60 @@ app.get("/login", async (req, res, next) => {
   const formattedUrl = `${baseUrl}/oauth/?t=${accessToken}`;
   res.redirect(formattedUrl);
 });
+app.post("/user/strategy/create", (req, res, next) => {
+  const reqBody: StrategyApiRequestBody = req.body;
+  const database: ApiData = getDatabase();
+  database[reqBody.username].strategies.push(reqBody.strat);
+  fs.writeFileSync("./database.json", JSON.stringify(database, null, 2));
+  return res.json({ message: "Strategy Created" });
+});
+app.post(
+  "/user/strategy/shoppingList/shoppingListItem/create",
+  (req, res, next) => {
+    const database: ApiData = getDatabase();
+    const reqBody: ShoppingListItemDTO = req.body
+    const strategy = getStrategy(reqBody, database)
+    strategy.shoppingList.push(reqBody.item);
+    fs.writeFileSync("./database.json", JSON.stringify(database, null, 2));
+    return res.json({ message: "Strategy Shopping List item created" });
+  }
+);
+app.post("/user/strategy", (req, res, next) => {
+  const reqBody: StrategyApiRequestBody = req.body;
+  const database: ApiData = getDatabase();
+  const strategyIndex = database[reqBody.username].strategies.findIndex(
+    (strat) => {
+      return strat.id === reqBody.strat.id;
+    }
+  );
+  database[reqBody.username].strategies.splice(strategyIndex, 1, reqBody.strat);
+  fs.writeFileSync("./database.json", JSON.stringify(database, null, 2));
+  return res.json({ message: "Strategy Updated" });
+});
+
+app.delete("/user/strategy/delete", (req, res, next) => {
+  const reqBody: DeleteStrategyBody = req.body;
+  const database: ApiData = getDatabase();
+  const strategyIndex = database[reqBody.username].strategies.findIndex(
+    (strat) => {
+      return strat.id === reqBody.id;
+    }
+  );
+  const deletedStrategy = database[reqBody.username].strategies.splice(
+    strategyIndex,
+    1
+  );
+  fs.writeFileSync("./database.json", JSON.stringify(database, null, 2));
+  return res.json({ message: `${deletedStrategy} deleted` });
+});
+app.delete("/user/strategy/shoppingList/shoppingListItem/delete", (req, res, next) => {
+  const reqBody: ShoppingListItemDTO = req.body
+  const database: ApiData = getDatabase();
+  const strategy: Strategy = getStrategy(reqBody, database)
+  const itemIndex = strategy.shoppingList.findIndex(item => {
+    return item.id === reqBody.item.id
+  })
+  const deletedItem = strategy.shoppingList.splice(itemIndex, 1)
+  fs.writeFileSync("./database.json", JSON.stringify(database, null, 2));
+  return res.json({ message: `${deletedItem} deleted` });
+})

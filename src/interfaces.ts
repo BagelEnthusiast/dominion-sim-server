@@ -23,12 +23,11 @@ export interface StrategyApiRequestBody {
   strat: Strategy;
   username: string;
 }
-export interface CreateShoppingListItemBody {
+export interface ShoppingListItemDTO {
   strategyId: string;
   username: string;
   item: ShoppingListItem;
 }
-
 export interface DeleteStrategyBody {
   id: string;
   username: string;
