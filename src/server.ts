@@ -26,6 +26,9 @@ app.listen(port, () => {
 });
 
 export const getDatabase = () => {
+  if (!fs.existsSync('./database.json')) {
+    fs.writeFileSync('./database.json', '{}', 'utf8');
+  }
   const buffer = fs.readFileSync("./database.json");
   const jsonStr = buffer.toString();
   return JSON.parse(jsonStr);
