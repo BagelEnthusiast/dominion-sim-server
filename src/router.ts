@@ -66,8 +66,8 @@ export const createApiRouter = () => {
   router.post(
     "/user/strategy/shoppingList/shoppingListItem/create",
     (req, res, next) => {
-      const database: ApiData = getDatabase();
       const reqBody: ShoppingListItemDTO = req.body
+      const database: ApiData = getDatabase();
       const strategy = getStrategy(reqBody, database)
       strategy.shoppingList.push(reqBody.item);
       fs.writeFileSync("./database.json", JSON.stringify(database, null, 2));
