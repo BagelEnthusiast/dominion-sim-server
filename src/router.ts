@@ -10,7 +10,7 @@ import {
 } from "./interfaces";
 import { getGoogleOauthToken, getGoogleUser } from "./oauthFunctions";
 import { signToken } from "./jwtFunctions";
-import { getDatabase, getStrategy } from "./database";
+import { createUser, getDatabase, getStrategy, getUser } from "./database";
 
 export const isDev = process.env.DEV_MODE;
 
@@ -24,10 +24,9 @@ export const createApiRouter = () => {
   router.get("/api", (req, res, next) => {
     res.send(getDatabase());
   });
-  router.get("/api/user/:username", (req, res, next) => {
+  router.get("/api/user/:username", async (req, res, next) => {
     const username = req.params.username;
-    const database = getDatabase();
-    const user = database[username];
+    const user = await getUser(username);
     res.send(user);
   });
   router.get("/login", async (req, res, next) => {
@@ -45,12 +44,8 @@ export const createApiRouter = () => {
     if (!verified_email) {
       return next(new Error("Google account not verified"));
     }
-    const database = getDatabase();
-  
-    if (!database.hasOwnProperty(email)) {
-      database[email] = { strategies: [] };
-      fs.writeFileSync("./database.json", JSON.stringify(database, null, 2));
-    }
+
+    await createUser(email);
     console.log("name, email, picture: ", name, email, picture);
   
     // Create access and refresh token
