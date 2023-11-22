@@ -4,9 +4,9 @@ import {
   GoogleOauthToken,
   GoogleUserResult
 } from "./interfaces";
-import { isDev } from "./server";
+import { isDev } from "./router";
 
-
+// referenced https://codevoweb.com/google-oauth-authentication-react-and-node/ source code for jwt functions
 export const getGoogleOauthToken = async ({
   code,
 }: {
