@@ -16,8 +16,14 @@ export const getDatabase = (): ApiData => {
   return JSON.parse(jsonStr);
 };
 
-const updateDatabase = (database: ApiData) => {
-  fs.writeFileSync("./database.json", JSON.stringify(database, null, 2));
+const updateDatabase = async (database: ApiData) => {
+  await fs.promises.writeFile("./database.json", JSON.stringify(database, null, 2));
+}
+
+const updateUser = async (username: string, data: UserData) => {
+  const database = getDatabase();
+  database[username] = data;
+  await updateDatabase(database);
 }
 
 export const getStrategy = (requestBody: ShoppingListItemDTO, database: ApiData) => {
@@ -41,8 +47,12 @@ export const getUser = async (username: string): Promise<UserData> => {
 export const createUser = async (email: string): Promise<void> => {
   const user = getUser(email);
   if (!user) {
-    const database = getDatabase();
-    database[email] = { strategies: [] };
-    updateDatabase(database);
+    await updateUser(email, { strategies: [] });
   }
+}
+
+export const createStrategy = async (username: string, strat: Strategy): Promise<void> => {
+  const user = await getUser(username);
+  user.strategies.push(strat);
+  await updateUser(username, user);
 }

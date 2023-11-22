@@ -10,7 +10,7 @@ import {
 } from "./interfaces";
 import { getGoogleOauthToken, getGoogleUser } from "./oauthFunctions";
 import { signToken } from "./jwtFunctions";
-import { createUser, getDatabase, getStrategy, getUser } from "./database";
+import { createUser, getDatabase, createStrategy, getStrategy, getUser } from "./database";
 
 export const isDev = process.env.DEV_MODE;
 
@@ -58,11 +58,9 @@ export const createApiRouter = () => {
     const formattedUrl = `${baseUrl}/oauth/?t=${accessToken}`;
     res.redirect(formattedUrl);
   });
-  router.post("/user/strategy/create", (req, res, next) => {
+  router.post("/user/strategy/create", async (req, res, next) => {
     const reqBody: StrategyApiRequestBody = req.body;
-    const database: ApiData = getDatabase();
-    database[reqBody.username].strategies.push(reqBody.strat);
-    fs.writeFileSync("./database.json", JSON.stringify(database, null, 2));
+    await createStrategy(reqBody.username, reqBody.strat)
     return res.json({ message: "Strategy Created" });
   });
   router.post(
